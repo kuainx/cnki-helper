@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         CNKI helper
-// @version      0.2
+// @version      0.3
 // @description  知网助手
 // @author       kuai
 // @match        https://kns.cnki.net/*
@@ -11,6 +11,11 @@
 (function () {
   'use strict';
   function copy_hook() {
+    const unselectable = document.querySelectorAll('h1,h2');
+    for (const element of unselectable) {
+      element.style.userSelect = 'text';
+    }
+
     document.onkeydown = function (e) {
       if (e.key == 'c' && e.ctrlKey) {
         const selection = window.getSelection();
@@ -42,10 +47,7 @@
       let mirror_btn = parent.children[5].cloneNode(true);
       let mirror_a = mirror_btn.children[0];
       mirror_a.innerHTML = '<i></i>oversea镜像';
-      mirror_a.href = location.href.replace(
-        'kns.cnki.net',
-        'gb.oversea.cnki.net'
-      );
+      mirror_a.href = location.href.replace('kns.cnki.net', 'gb.oversea.cnki.net');
       parent.appendChild(mirror_btn);
       console.log('[cnki-helper]hook dl_pdf finished');
     }
