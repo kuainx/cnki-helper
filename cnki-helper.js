@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         CNKI helper
-// @version      0.3
+// @version      0.3.1
 // @description  知网助手
 // @author       kuai
 // @match        https://kns.cnki.net/*
@@ -47,7 +47,7 @@
       let mirror_btn = parent.children[5].cloneNode(true);
       let mirror_a = mirror_btn.children[0];
       mirror_a.innerHTML = '<i></i>oversea镜像';
-      mirror_a.href = location.href.replace('kns.cnki.net', 'gb.oversea.cnki.net');
+      mirror_a.href = location.href.replace('kns.cnki.net', 'oversea.cnki.net');
       parent.appendChild(mirror_btn);
       console.log('[cnki-helper]hook dl_pdf finished');
     }
