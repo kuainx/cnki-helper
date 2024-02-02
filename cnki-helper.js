@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CNKI helper
-// @version      0.3.1
-// @description  知网助手
+// @version      0.4.0
+// @description  知网助手 - 复制；下载pdf；oversea镜像；下载引用
 // @author       kuai
 // @match        https://kns.cnki.net/*
 // @match        https://x.cnki.net/*
@@ -53,6 +53,40 @@
     }
   }
 
+  function exportFile(name, data) {
+    let export_blob = new Blob([data], { type: "text/plain,charset=UTF-8" });
+    let save_link = document.createElement("a");
+    save_link.href = window.URL.createObjectURL(export_blob);
+    save_link.download = name;
+    save_link.click();
+  }
+
+  function dl_quote() {
+    const btn_container = document.querySelectorAll(".operat");
+    btn_container.forEach(e => {
+      e.style.minWidth = '116px';
+      const filename = e.parentNode.children[0].children[0].value
+      const btn = e.children[0].cloneNode(true);
+      btn.href = 'javascript:void(0)'
+      btn.target = '_self'
+      btn.onclick = r => {
+        console.log(r);
+        $.post('https://kns.cnki.net/dm8/API/GetExport', {
+          filename,
+          displaymode: 'GBTREFER,elearning,EndNote',
+          uniplatform: 'NZKPT'
+        }, data => {
+          const file_data = data.data[0].value[0].replaceAll(/\[.\]/, '').split('.')
+          const enlData = data.data[2].value[0].replaceAll('%','\r\n%')
+          exportFile(file_data[1] + "_" + file_data[0] + '.enw', enlData)
+        })
+      }
+      e.appendChild(btn);
+    })
+    console.log(btn_container);
+
+  }
+
   function main() {
     if (document.readyState !== 'complete') {
       setTimeout(main, 1000);
@@ -70,6 +104,9 @@
           break;
         case 'KXReader':
           copy_hook();
+          break;
+        case 'kns8s':
+          dl_quote();
           break;
       }
     }
