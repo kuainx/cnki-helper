@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         CNKI helper
-// @version      0.4.0
+// @version      0.4.1
 // @description  知网助手 - 复制；下载pdf；oversea镜像；下载引用
 // @author       kuai
 // @match        https://kns.cnki.net/*
@@ -77,14 +77,24 @@
           uniplatform: 'NZKPT'
         }, data => {
           const file_data = data.data[0].value[0].replaceAll(/\[.\]/, '').split('.')
-          const enlData = data.data[2].value[0].replaceAll('%','\r\n%')
+          const enlData = data.data[2].value[0].replaceAll('%', '\r\n%')
           exportFile(file_data[1] + "_" + file_data[0] + '.enw', enlData)
         })
       }
       e.appendChild(btn);
     })
     console.log(btn_container);
+  }
 
+  function init_quote_mutation() {
+    const targetNode = document.querySelector("#ModuleSearchResult");
+    const config = { attributes: true, childList: true };
+    const callback = function (mutationsList, observer) {
+      console.log(mutationsList);
+      dl_quote()
+    };
+    const observer = new MutationObserver(callback);
+    observer.observe(targetNode, config);
   }
 
   function main() {
@@ -107,6 +117,7 @@
           break;
         case 'kns8s':
           dl_quote();
+          init_quote_mutation();
           break;
       }
     }
