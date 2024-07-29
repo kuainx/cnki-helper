@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         CNKI helper
-// @version      0.4.1
+// @version      0.4.2
 // @description  知网助手 - 复制；下载pdf；oversea镜像；下载引用
 // @author       kuai
 // @match        https://kns.cnki.net/*
@@ -97,6 +97,12 @@
     observer.observe(targetNode, config);
   }
 
+  function remove_login_ads(){
+    document.querySelector(".read-btn-box").style.padding = "0";
+    document.querySelector(".guide-box").style.display = "none";
+    document.querySelector("main").style.height = "calc(100vh - 44px)";
+  }
+
   function main() {
     if (document.readyState !== 'complete') {
       setTimeout(main, 1000);
@@ -105,6 +111,7 @@
       const path = location.pathname.split('/');
       switch (path[1]) {
         case 'kcms':
+        case 'kcms2':
           if (path[3] === 'detail.aspx') {
             dl_pdf();
           }
@@ -118,6 +125,9 @@
         case 'kns8s':
           dl_quote();
           init_quote_mutation();
+          break;
+        case 'nzkhtml':
+          remove_login_ads();
           break;
       }
     }
